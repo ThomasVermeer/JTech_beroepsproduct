@@ -11,43 +11,52 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) {
-        // 1. De balk met knoppen
+        //De navigatiebalk met de vier specifieke knoppen
         HBox navBar = new HBox(15);
         navBar.getStyleClass().add("nav-bar");
 
         Button btnSoldaten = new Button("Soldaten");
-        Button btnMateriaal = new Button("Materiaal");
+        Button btnMaterialen = new Button("Materialen");
+        Button btnVoertuigen = new Button("Voertuigen");
+        Button btnKoppelingen = new Button("Koppelingen");
 
-        // 2. Koppel de CSS klassen uit je styleguide
+        //styling ophalen uit de style (nav-button uit de stylesheet)
         btnSoldaten.getStyleClass().add("nav-button");
-        btnMateriaal.getStyleClass().add("nav-button");
+        btnMaterialen.getStyleClass().add("nav-button");
+        btnVoertuigen.getStyleClass().add("nav-button");
+        btnKoppelingen.getStyleClass().add("nav-button");
 
-        // 3. ACTIE: Open soldaten in een nieuw venster
-        btnSoldaten.setOnAction(e -> {
-            Stage venster = new Stage();
-            venster.setTitle("Soldaten Beheer");
+        // acties koppelen aan de juiste schermen
+        btnSoldaten.setOnAction(e -> openNieuwVenster("Soldaten Beheer", new SoldatenScreen()));
+        btnMaterialen.setOnAction(e -> openNieuwVenster("Materiaal Beheer", new MateriaalScreen()));
+        btnVoertuigen.setOnAction(e -> openNieuwVenster("Voertuigen Beheer", new VoertuigenScreen()));
+        btnKoppelingen.setOnAction(e -> openNieuwVenster("Koppelingen Beheer", new KoppelingenScreen()));
 
-            // Maak een nieuwe scene voor dit specifieke venster
-            Scene soldatenScene = new Scene(new SoldatenScreen(), 800, 600);
+        navBar.getChildren().addAll(btnSoldaten, btnMaterialen, btnVoertuigen, btnKoppelingen);
 
-            // Gebruik het juiste relatieve pad naar je CSS
-            soldatenScene.getStylesheets().add(getClass().getResource("stylesheets/style.css").toExternalForm());
+        // home scene setup
+        Scene homeScene = new Scene(navBar, 600, 150);
 
-            venster.setScene(soldatenScene);
-            venster.show();
-        });
+        // css pad ophalen
+        String cssPath = getClass().getResource("/com/example/jtech_beroepsproduct/stylesheets/style.css").toExternalForm();
+        homeScene.getStylesheets().add(cssPath);
 
-        navBar.getChildren().addAll(btnSoldaten, btnMateriaal);
-
-
-        Scene homeScene = new Scene(navBar, 400, 100);
-
-
-        homeScene.getStylesheets().add(getClass().getResource("/com/example/jtech_beroepsproduct/stylesheets/style.css").toExternalForm());
-
-        stage.setTitle("J-Tac Menu");
+        stage.setTitle("J-Tac Beheersysteem");
         stage.setScene(homeScene);
         stage.show();
+    }
+
+    // hulpmethode om vensters te openen met de juiste styling
+    private void openNieuwVenster(String titel, javafx.scene.layout.Region scherm) {
+        Stage venster = new Stage();
+        venster.setTitle(titel);
+        Scene scene = new Scene(scherm, 900, 650); // Iets groter voor de tabellen
+
+        String css = getClass().getResource("/com/example/jtech_beroepsproduct/stylesheets/style.css").toExternalForm();
+        scene.getStylesheets().add(css);
+
+        venster.setScene(scene);
+        venster.show();
     }
 
     public static void main(String[] args) {
