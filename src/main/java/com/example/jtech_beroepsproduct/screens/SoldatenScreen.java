@@ -9,7 +9,7 @@ import com.example.jtech_beroepsproduct.model.Soldaat;
 public class SoldatenScreen extends VBox {
 
     public SoldatenScreen() {
-        //Instellingen voor de layout (padding en ruimte tussen elementen)
+        //instellingen voor de layout (padding en ruimte tussen elementen)
         this.setPadding(new Insets(20));
         this.setSpacing(20);
 
