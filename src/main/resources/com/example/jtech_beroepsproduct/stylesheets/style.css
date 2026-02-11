@@ -16,7 +16,7 @@
 .nav-button {
     -fx-background-color: #1C8AFF;
     -fx-text-fill: #F9F9F9;
-    -fx-font-weight: regular;
+    /*-fx-font-weight: regular; */
     -fx-padding: 5 15;
     -fx-background-radius: 20;
     -fx-cursor: hand;
@@ -51,7 +51,7 @@
 
 .text-field {
     -fx-background-color: white;
-    -fx-border-color: #1C8AFF; /
+    -fx-border-color: #1C8AFF;
     -fx-border-radius: 3;
     -fx-padding: 5;
 }
