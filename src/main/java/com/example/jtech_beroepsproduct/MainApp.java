@@ -37,7 +37,6 @@ public class MainApp extends Application {
             venster.show();
         });
 
-
         navBar.getChildren().addAll(btnSoldaten, btnMateriaal);
 
 
