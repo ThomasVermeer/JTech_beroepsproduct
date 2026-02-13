@@ -73,7 +73,17 @@ public class SoldatenScreen extends VBox {
 
         refreshTable();
 
-        // informatie ophalen en checken of gegevens leeg zijn
+        // de heerlijke functie om met een simpele click data te kunnen bewerken zoals in professionele programma's word gedaan
+        tableView.setOnMouseClicked(e -> {
+            Soldaat geselecteerd = tableView.getSelectionModel().getSelectedItem();
+            if (geselecteerd != null) {
+                txtNummer.setText(geselecteerd.getNummer());
+                txtNaam.setText(geselecteerd.getNaam());
+                txtRang.setText(geselecteerd.getRang());
+                dateGeboorte.setValue(geselecteerd.getGeboorteDatum());
+            }
+        });
+
         btnOpslaan.setOnAction(e -> {
             if (!txtNummer.getText().isEmpty() && dateGeboorte.getValue() != null) {
                 Soldaat s = new Soldaat(
@@ -94,7 +104,6 @@ public class SoldatenScreen extends VBox {
         this.getChildren().addAll(titel, inputBalk, tableView);
     }
 
-    //refresh direcht na het gebruik
     private void refreshTable() {
         tableView.setItems(controller.getAllSoldaten());
     }
