@@ -6,6 +6,7 @@ module com.example.jtech_beroepsproduct {
 //zelf toegevoegd
     opens com.example.jtech_beroepsproduct to javafx.fxml;
     exports com.example.jtech_beroepsproduct;
+    requires java.sql;
     //zelf toegevoegd
     exports com.example.jtech_beroepsproduct.screens;
 }
