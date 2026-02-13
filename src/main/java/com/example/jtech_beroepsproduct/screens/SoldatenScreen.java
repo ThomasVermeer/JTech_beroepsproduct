@@ -1,12 +1,17 @@
 package com.example.jtech_beroepsproduct.screens;
 
+import com.example.jtech_beroepsproduct.controller.SoldaatController;
+import com.example.jtech_beroepsproduct.model.Soldaat;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import com.example.jtech_beroepsproduct.model.Soldaat;
 
 public class SoldatenScreen extends VBox {
+
+    private SoldaatController controller = new SoldaatController();
+    private TableView<Soldaat> tableView = new TableView<>();
 
     public SoldatenScreen() {
         //instellingen voor de layout (padding en ruimte tussen elementen)
@@ -40,29 +45,57 @@ public class SoldatenScreen extends VBox {
         // 4. De Tabel
         //TableView tableView = new TableView();
 
-       // TableColumn colNummer = new TableColumn("soldaat nummer");
-       // TableColumn colNaam = new TableColumn("soldaat naam");
-       // TableColumn colRang = new TableColumn("soldaat rang");
-       // TableColumn colGeboorte = new TableColumn("geboorte datum");
-       // TableColumn colActies = new TableColumn("acties");
+        // TableColumn colNummer = new TableColumn("soldaat nummer");
+        // TableColumn colNaam = new TableColumn("soldaat naam");
+        // TableColumn colRang = new TableColumn("soldaat rang");
+        // TableColumn colGeboorte = new TableColumn("geboorte datum");
+        // TableColumn colActies = new TableColumn("acties");
 
 // code hier onder gebruiken wanneer soldaten model gemaakt en ingevuld is (huidige code puur voor visueel dus
 // geen zorgen over de warnings)
 
-        TableView<Soldaat> tableView = new TableView<>();
-
         TableColumn<Soldaat, String> colNummer = new TableColumn<>("soldaat nummer");
-        TableColumn<Soldaat, String> colNaam = new TableColumn<>("soldaat naam");
-        TableColumn<Soldaat, String> colRang = new TableColumn<>("soldaat rang");
-        TableColumn<Soldaat, String> colGeboorte = new TableColumn<>("geboorte datum");
-        TableColumn<Soldaat, String> colActies = new TableColumn<>("acties");
+        colNummer.setCellValueFactory(new PropertyValueFactory<>("nummer"));
 
-        tableView.getColumns().addAll(colNummer, colNaam, colRang, colGeboorte, colActies);
+        TableColumn<Soldaat, String> colNaam = new TableColumn<>("soldaat naam");
+        colNaam.setCellValueFactory(new PropertyValueFactory<>("naam"));
+
+        TableColumn<Soldaat, String> colRang = new TableColumn<>("soldaat rang");
+        colRang.setCellValueFactory(new PropertyValueFactory<>("rang"));
+
+        TableColumn<Soldaat, String> colGeboorte = new TableColumn<>("geboorte datum");
+        colGeboorte.setCellValueFactory(new PropertyValueFactory<>("geboorteDatum"));
+
+        tableView.getColumns().addAll(colNummer, colNaam, colRang, colGeboorte);
 
         //gewenste hoogte instellen van de tabel (kan nog aanpassen moet wel dan bij elke page het zelfde zijn
         tableView.setPrefHeight(400);
 
+        refreshTable();
+
+        // informatie ophalen en checken of gegevens leeg zijn
+        btnOpslaan.setOnAction(e -> {
+            if (!txtNummer.getText().isEmpty() && dateGeboorte.getValue() != null) {
+                Soldaat s = new Soldaat(
+                        txtNummer.getText(),
+                        txtNaam.getText(),
+                        txtRang.getText(),
+                        dateGeboorte.getValue()
+                );
+                controller.opslaan(s);
+                refreshTable();
+                txtNummer.clear();
+                txtNaam.clear();
+                txtRang.clear();
+                dateGeboorte.setValue(null);
+            }
+        });
 
         this.getChildren().addAll(titel, inputBalk, tableView);
+    }
+
+    //refresh direcht na het gebruik
+    private void refreshTable() {
+        tableView.setItems(controller.getAllSoldaten());
     }
 }
