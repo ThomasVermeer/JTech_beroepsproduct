@@ -1,12 +1,17 @@
 package com.example.jtech_beroepsproduct.screens;
 
+import com.example.jtech_beroepsproduct.controller.MateriaalController;
 import com.example.jtech_beroepsproduct.model.Materiaal;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 public class MateriaalScreen extends VBox {
+
+    private MateriaalController controller = new MateriaalController();
+    private TableView<Materiaal> tableView = new TableView<>();
 
     public MateriaalScreen() {
         this.setPadding(new Insets(20));
@@ -23,21 +28,69 @@ public class MateriaalScreen extends VBox {
         TextField txtDoel = new TextField();
         txtDoel.setPromptText("doel");
 
-        Button btnOpslaan = new Button("materiaal toevoegen");
+        Button btnOpslaan = new Button("materiaal maken of bijwerken");
         btnOpslaan.getStyleClass().add("action-button");
-        inputBalk.getChildren().addAll(txtMateriaalNummer, txtType, txtDoel, btnOpslaan);
 
-        // tabel met Generics om warnings te voorkomen (je geeft gewoon aan welk datatype het is)
-        TableView<Materiaal> tableView = new TableView<>();
+        Button btnVerwijderen = new Button("verwijderen");
+        btnVerwijderen.getStyleClass().add("delete-button");
 
+        inputBalk.getChildren().addAll(txtMateriaalNummer, txtType, txtDoel, btnOpslaan, btnVerwijderen);
+
+        // tabel met generics om warnings te voorkomen (je geeft gewoon aan welk datatype het is)
         TableColumn<Materiaal, String> colNummer = new TableColumn<>("materiaal nummer");
-        TableColumn<Materiaal, String> colType = new TableColumn<>("type");
-        TableColumn<Materiaal, String> colDoel = new TableColumn<>("doel");
-        TableColumn<Materiaal, String> colActies = new TableColumn<>("acties");
+        colNummer.setCellValueFactory(new PropertyValueFactory<>("materiaalnummer"));
 
-        tableView.getColumns().addAll(colNummer, colType, colDoel, colActies);
+        TableColumn<Materiaal, String> colType = new TableColumn<>("type");
+        colType.setCellValueFactory(new PropertyValueFactory<>("type"));
+
+        TableColumn<Materiaal, String> colDoel = new TableColumn<>("doel");
+        colDoel.setCellValueFactory(new PropertyValueFactory<>("doel"));
+
+        tableView.getColumns().addAll(colNummer, colType, colDoel);
         tableView.setPrefHeight(400);
 
+        refreshTable();
+
+        // de heerlijke functie om met een simpele click data te kunnen bewerken zoals in professionele programma's word gedaan
+        tableView.setOnMouseClicked(e -> {
+            Materiaal geselecteerd = tableView.getSelectionModel().getSelectedItem();
+            if (geselecteerd != null) {
+                txtMateriaalNummer.setText(geselecteerd.getMateriaalnummer());
+                txtType.setText(geselecteerd.getType());
+                txtDoel.setText(geselecteerd.getDoel());
+            }
+        });
+
+        btnOpslaan.setOnAction(e -> {
+            if (!txtMateriaalNummer.getText().isEmpty()) {
+                Materiaal m = new Materiaal(
+                        txtMateriaalNummer.getText(),
+                        txtType.getText(),
+                        txtDoel.getText()
+                );
+                controller.opslaan(m);
+                refreshTable();
+                txtMateriaalNummer.clear();
+                txtType.clear();
+                txtDoel.clear();
+            }
+        });
+
+        btnVerwijderen.setOnAction(e -> {
+            Materiaal geselecteerd = tableView.getSelectionModel().getSelectedItem();
+            if (geselecteerd != null) {
+                controller.verwijderen(geselecteerd.getMateriaalnummer());
+                refreshTable();
+                txtMateriaalNummer.clear();
+                txtType.clear();
+                txtDoel.clear();
+            }
+        });
+
         this.getChildren().addAll(titel, inputBalk, tableView);
+    }
+
+    private void refreshTable() {
+        tableView.setItems(controller.getAllMateriaal());
     }
 }
