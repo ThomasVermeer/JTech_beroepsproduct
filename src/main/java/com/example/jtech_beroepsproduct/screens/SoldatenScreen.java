@@ -40,7 +40,10 @@ public class SoldatenScreen extends VBox {
         Button btnOpslaan = new Button("soldaat maken of bijwerken");
         btnOpslaan.getStyleClass().add("action-button");
 
-        inputBalk.getChildren().addAll(txtNummer, txtNaam, txtRang, dateGeboorte, btnOpslaan);
+        Button btnVerwijderen = new Button("verwijderen");
+        btnVerwijderen.getStyleClass().add("delete-button"); // Je kunt dit stylen in je CSS
+
+        inputBalk.getChildren().addAll(txtNummer, txtNaam, txtRang, dateGeboorte, btnOpslaan, btnVerwijderen);
 
         // 4. De Tabel
         //TableView tableView = new TableView();
@@ -53,6 +56,8 @@ public class SoldatenScreen extends VBox {
 
 // code hier onder gebruiken wanneer soldaten model gemaakt en ingevuld is (huidige code puur voor visueel dus
 // geen zorgen over de warnings)
+
+        //setcellvalue factory en propertyvaluefactory zijn dingen die specifiek worden gebruikt bij een table in java
 
         TableColumn<Soldaat, String> colNummer = new TableColumn<>("soldaat nummer");
         colNummer.setCellValueFactory(new PropertyValueFactory<>("nummer"));
@@ -93,6 +98,18 @@ public class SoldatenScreen extends VBox {
                         dateGeboorte.getValue()
                 );
                 controller.opslaan(s);
+                refreshTable();
+                txtNummer.clear();
+                txtNaam.clear();
+                txtRang.clear();
+                dateGeboorte.setValue(null);
+            }
+        });
+
+        btnVerwijderen.setOnAction(e -> {
+            Soldaat geselecteerd = tableView.getSelectionModel().getSelectedItem();
+            if (geselecteerd != null) {
+                controller.verwijderen(geselecteerd.getNummer());
                 refreshTable();
                 txtNummer.clear();
                 txtNaam.clear();

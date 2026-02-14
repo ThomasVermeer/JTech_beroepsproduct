@@ -1,17 +1,14 @@
 .root {
-
     -fx-font-family: "Roboto", "Dialog";
     -fx-background-color: #F9F9F9;
     -fx-font-size: 10px;
 }
-
 
 .headline-1 {
     -fx-font-size: 24px;
     -fx-font-weight: bold;
     -fx-text-fill: #1A1A1A;
 }
-
 
 .nav-button {
     -fx-background-color: #1C8AFF;
@@ -26,7 +23,6 @@
     -fx-background-color: #01B7FF;
 }
 
-
 .action-button {
     -fx-background-color: #1C8AFF;
     -fx-text-fill: white;
@@ -37,6 +33,21 @@
     -fx-border-width: 1;
 }
 
+/* De nieuwe verwijderknop styling */
+.delete-button {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8 20;
+    -fx-background-radius: 5;
+    -fx-border-color: #1A1A1A;
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+}
+
+.delete-button:hover {
+    -fx-background-color: #c0392b;
+}
 
 .table-view {
     -fx-background-color: white;
@@ -47,7 +58,6 @@
     -fx-background-color: #F9F9F9;
     -fx-border-color: #CCCCCC;
 }
-
 
 .text-field {
     -fx-background-color: white;

@@ -58,7 +58,7 @@ public class SoldaatController {
         }
     }
 
-    // Soldaat verwijderen
+    // soldaat verwijderen
     public void verwijderen(String nummer) {
         String sql = "DELETE FROM Soldaat WHERE soldaatnummer = ?";
 
