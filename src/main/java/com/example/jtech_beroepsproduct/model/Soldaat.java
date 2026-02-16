@@ -2,23 +2,22 @@ package com.example.jtech_beroepsproduct.model;
 
 import java.time.LocalDate;
 
-public class Soldaat {
-    // de variabelen aangeven (private voor veiligheid)
-    private String nummer;
+public class Soldaat extends BasisModel {
+    // variabelen aangeven
     private String naam;
     private String rang;
     private LocalDate geboorteDatum;
 
-    // constructor om een soldaat aan te kunnen maken
+    // constructor van soldaten
     public Soldaat(String nummer, String naam, String rang, LocalDate geboorteDatum) {
-        this.nummer = nummer;
+        super(nummer); // "Hey vader-model, hier is het ID dat jij voor mij mag onthouden"
         this.naam = naam;
         this.rang = rang;
         this.geboorteDatum = geboorteDatum;
     }
 
-    // getters die de tableview nodig heeft om de info uit te halen
-    public String getNummer() { return nummer; }
+    // getters die de tableView nodig heeft om de kolommen te vullen
+    public String getNummer() { return getId(); }
     public String getNaam() { return naam; }
     public String getRang() { return rang; }
     public LocalDate getGeboorteDatum() { return geboorteDatum; }
