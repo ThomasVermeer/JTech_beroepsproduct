@@ -2,7 +2,6 @@ package com.example.jtech_beroepsproduct.screens;
 
 import com.example.jtech_beroepsproduct.controller.SoldaatController;
 import com.example.jtech_beroepsproduct.model.Soldaat;
-import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -13,8 +12,6 @@ public class SoldatenScreen extends VBox {
 
     private SoldaatController controller = new SoldaatController();
     private TableView<Soldaat> tableView = new TableView<>();
-    // Het nieuwe zoekveld maken we aan als variabele zodat we er overal bij kunnen
-    private TextField txtZoek = new TextField();
 
     public SoldatenScreen() {
         //instellingen voor de layout (padding en ruimte tussen elementen)
@@ -24,12 +21,6 @@ public class SoldatenScreen extends VBox {
         // titel en headline 1 ophalen uit onze stylesheet
         Label titel = new Label("Soldaten Beheer");
         titel.getStyleClass().add("headline-1");
-
-        // Zoekbalk toevoegen boven de inputvelden
-        HBox zoekBalk = new HBox(10);
-        txtZoek.setPromptText("Zoek op nummer, naam, rang of datum...");
-        txtZoek.setPrefWidth(300);
-        zoekBalk.getChildren().addAll(new Label("Zoeken:"), txtZoek);
 
         // invoer velden maken met placeholder tekst
         HBox inputBalk = new HBox(10);
@@ -55,6 +46,17 @@ public class SoldatenScreen extends VBox {
         inputBalk.getChildren().addAll(txtNummer, txtNaam, txtRang, dateGeboorte, btnOpslaan, btnVerwijderen);
 
         // 4. De Tabel
+        //TableView tableView = new TableView();
+
+        // TableColumn colNummer = new TableColumn("soldaat nummer");
+        // TableColumn colNaam = new TableColumn("soldaat naam");
+        // TableColumn colRang = new TableColumn("soldaat rang");
+        // TableColumn colGeboorte = new TableColumn("geboorte datum");
+        // TableColumn colActies = new TableColumn("acties");
+
+// code hier onder gebruiken wanneer soldaten model gemaakt en ingevuld is (huidige code puur voor visueel dus
+// geen zorgen over de warnings)
+
         //setcellvalue factory en propertyvaluefactory zijn dingen die specifiek worden gebruikt bij een table in java
 
         TableColumn<Soldaat, String> colNummer = new TableColumn<>("soldaat nummer");
@@ -116,43 +118,10 @@ public class SoldatenScreen extends VBox {
             }
         });
 
-        // We voegen de zoekBalk toe aan de layout
-        this.getChildren().addAll(titel, zoekBalk, inputBalk, tableView);
+        this.getChildren().addAll(titel, inputBalk, tableView);
     }
 
     private void refreshTable() {
-        // We halen eerst alle soldaten op in een FilteredList
-        FilteredList<Soldaat> filteredData = new FilteredList<>(controller.getAllSoldaten(), p -> true);
-
-        // De listener die kijkt of er tekst in het zoekveld verandert
-        txtZoek.textProperty().addListener((observable, oldValue, newValue) -> {
-            filteredData.setPredicate(soldaat -> {
-                // Als het zoekveld leeg is laten we alles zien
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                }
-
-                String lowerCaseFilter = newValue.toLowerCase();
-
-                // We maken van de geboortedatum een String zodat we die ook kunnen doorzoeken
-                String geboorteString = soldaat.getGeboorteDatum() != null ? soldaat.getGeboorteDatum().toString() : "";
-
-                // Checken of de tekst voorkomt in ALLE velden
-                if (soldaat.getNummer().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                } else if (soldaat.getNaam().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                } else if (soldaat.getRang().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                } else if (geboorteString.contains(lowerCaseFilter)) {
-                    // Hiermee zoek je ook op de datum (bijv. "1995" of "05-12")
-                    return true;
-                }
-                return false; // Geen match gevonden
-            });
-        });
-
-        // De tabel vullen met de gefilterde lijst
-        tableView.setItems(filteredData);
+        tableView.setItems(controller.getAllSoldaten());
     }
 }
