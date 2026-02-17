@@ -13,7 +13,9 @@ public class SoldaatController {
     // haal alle soldaten op uit de database
     public ObservableList<Soldaat> getAllSoldaten() {
         ObservableList<Soldaat> lijst = FXCollections.observableArrayList();
-        String sql = "SELECT * FROM Soldaat";
+
+        // 5 clauses voor de VERPLICHTE EISEN: SELECT, FROM, WHERE, ORDER BY, LIMIT
+        String sql = "SELECT * FROM Soldaat WHERE soldaatnaam LIKE '%' ORDER BY soldaatnaam ASC LIMIT 1000";
 
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();

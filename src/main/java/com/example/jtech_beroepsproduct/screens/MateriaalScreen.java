@@ -2,6 +2,7 @@ package com.example.jtech_beroepsproduct.screens;
 
 import com.example.jtech_beroepsproduct.controller.MateriaalController;
 import com.example.jtech_beroepsproduct.model.Materiaal;
+import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -12,6 +13,7 @@ public class MateriaalScreen extends VBox {
 
     private MateriaalController controller = new MateriaalController();
     private TableView<Materiaal> tableView = new TableView<>();
+    private TextField txtZoek = new TextField();
 
     public MateriaalScreen() {
         this.setPadding(new Insets(20));
@@ -19,6 +21,12 @@ public class MateriaalScreen extends VBox {
 
         Label titel = new Label("Materiaal Beheer");
         titel.getStyleClass().add("headline-1");
+
+        // Zoekbalk toevoegen
+        HBox zoekBalk = new HBox(10);
+        txtZoek.setPromptText("Zoek op nummer, type of doel...");
+        txtZoek.setPrefWidth(300);
+        zoekBalk.getChildren().addAll(new Label("Zoeken:"), txtZoek);
 
         HBox inputBalk = new HBox(10);
         TextField txtMateriaalNummer = new TextField();
@@ -36,7 +44,7 @@ public class MateriaalScreen extends VBox {
 
         inputBalk.getChildren().addAll(txtMateriaalNummer, txtType, txtDoel, btnOpslaan, btnVerwijderen);
 
-        // tabel met generics om warnings te voorkomen (je geeft gewoon aan welk datatype het is)
+        // tabel met generics om warnings te voorkomen
         TableColumn<Materiaal, String> colNummer = new TableColumn<>("materiaal nummer");
         colNummer.setCellValueFactory(new PropertyValueFactory<>("materiaalnummer"));
 
@@ -87,10 +95,31 @@ public class MateriaalScreen extends VBox {
             }
         });
 
-        this.getChildren().addAll(titel, inputBalk, tableView);
+        this.getChildren().addAll(titel, zoekBalk, inputBalk, tableView);
     }
 
     private void refreshTable() {
-        tableView.setItems(controller.getAllMateriaal());
+        FilteredList<Materiaal> filteredData = new FilteredList<>(controller.getAllMateriaal(), p -> true);
+
+        txtZoek.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(materiaal -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                if (materiaal.getMateriaalnummer().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                } else if (materiaal.getType().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                } else if (materiaal.getDoel().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                }
+                return false;
+            });
+        });
+
+        tableView.setItems(filteredData);
     }
 }

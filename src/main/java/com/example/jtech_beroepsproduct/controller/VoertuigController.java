@@ -12,7 +12,9 @@ public class VoertuigController {
     // haal alle voertuigen op uit de database
     public ObservableList<Voertuig> getAllVoertuigen() {
         ObservableList<Voertuig> lijst = FXCollections.observableArrayList();
-        String sql = "SELECT * FROM Voertuigen";
+
+        // hier voegen we de 5 clauses toe: SELECT, FROM, WHERE, ORDER BY, LIMIT
+        String sql = "SELECT * FROM Voertuigen WHERE kenteken LIKE '%' ORDER BY voertuignaam ASC LIMIT 500";
 
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();

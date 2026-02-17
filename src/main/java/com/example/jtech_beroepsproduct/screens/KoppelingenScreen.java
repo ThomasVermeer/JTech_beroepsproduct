@@ -2,6 +2,7 @@ package com.example.jtech_beroepsproduct.screens;
 
 import com.example.jtech_beroepsproduct.controller.*;
 import com.example.jtech_beroepsproduct.model.*;
+import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -13,12 +14,9 @@ public class KoppelingenScreen extends VBox {
 
     private KoppelingController controller = new KoppelingController();
     private SoldaatController soldaatController = new SoldaatController();
-    private MateriaalController materiaalController = new MateriaalController();
-    private VoertuigController voertuigController = new VoertuigController();
-
     private TableView<Koppeling> tableView = new TableView<>();
+    private TextField txtZoek = new TextField();
 
-    // comboBoxen globaal maken zodat refreshTable erbij kan
     private ComboBox<String> cbSoldaat = new ComboBox<>();
     private ComboBox<String> cbMateriaal = new ComboBox<>();
     private ComboBox<String> cbVoertuig = new ComboBox<>();
@@ -30,8 +28,13 @@ public class KoppelingenScreen extends VBox {
         Label titel = new Label("Koppel Soldaat aan Uitrusting");
         titel.getStyleClass().add("headline-1");
 
-        HBox inputBalk = new HBox(10);
+        // Zoekbalk toevoegen voor de filter-functionaliteit
+        HBox zoekBalk = new HBox(10);
+        txtZoek.setPromptText("Filter op soldaat, materiaal of kenteken...");
+        txtZoek.setPrefWidth(300);
+        zoekBalk.getChildren().addAll(new Label("Zoeken:"), txtZoek);
 
+        HBox inputBalk = new HBox(10);
         cbSoldaat.setPromptText("Kies soldaat");
         cbMateriaal.setPromptText("Kies materiaal (optioneel)");
         cbVoertuig.setPromptText("Kies voertuig (optioneel)");
@@ -65,12 +68,9 @@ public class KoppelingenScreen extends VBox {
             if (cbSoldaat.getValue() != null && (cbMateriaal.getValue() != null || cbVoertuig.getValue() != null)) {
                 controller.koppel(cbSoldaat.getValue(), cbMateriaal.getValue(), cbVoertuig.getValue());
                 refreshTable();
-
                 cbSoldaat.setValue(null);
                 cbMateriaal.setValue(null);
                 cbVoertuig.setValue(null);
-            } else {
-                System.out.println("Selecteer een soldaat en minstens één item (materiaal of voertuig).");
             }
         });
 
@@ -82,14 +82,30 @@ public class KoppelingenScreen extends VBox {
             }
         });
 
-        this.getChildren().addAll(titel, inputBalk, tableView);
+        this.getChildren().addAll(titel, zoekBalk, inputBalk, tableView);
     }
 
     private void refreshTable() {
-        // update de tabel
-        tableView.setItems(controller.getAllKoppelingen());
+        // we halen de data op via de simpele controller-methode
+        FilteredList<Koppeling> filteredData = new FilteredList<>(controller.getAllKoppelingen(), p -> true);
 
-        // update de dropdowns zodat reeds gekoppelde items verdwijnen
+        // de filter-logica die alleen in Java draait
+        txtZoek.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(koppeling -> {
+                if (newValue == null || newValue.isEmpty()) return true;
+                String filter = newValue.toLowerCase();
+
+                if (koppeling.getSoldaatnummer().toLowerCase().contains(filter)) return true;
+                if (koppeling.getMateriaalnummer() != null && koppeling.getMateriaalnummer().toLowerCase().contains(filter)) return true;
+                if (koppeling.getKenteken() != null && koppeling.getKenteken().toLowerCase().contains(filter)) return true;
+
+                return false;
+            });
+        });
+
+        tableView.setItems(filteredData);
+
+        // Dropdowns verversen
         cbSoldaat.getItems().clear();
         soldaatController.getAllSoldaten().forEach(s -> cbSoldaat.getItems().add(s.getNummer()));
 

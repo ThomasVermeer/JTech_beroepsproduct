@@ -2,6 +2,7 @@ package com.example.jtech_beroepsproduct.screens;
 
 import com.example.jtech_beroepsproduct.controller.VoertuigController;
 import com.example.jtech_beroepsproduct.model.Voertuig;
+import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -12,6 +13,7 @@ public class VoertuigenScreen extends VBox {
 
     private VoertuigController controller = new VoertuigController();
     private TableView<Voertuig> tableView = new TableView<>();
+    private TextField txtZoek = new TextField();
 
     public VoertuigenScreen() {
         this.setPadding(new Insets(20));
@@ -19,6 +21,11 @@ public class VoertuigenScreen extends VBox {
 
         Label titel = new Label("Voertuigen Beheer");
         titel.getStyleClass().add("headline-1");
+
+        HBox zoekBalk = new HBox(10);
+        txtZoek.setPromptText("Zoek op kenteken, naam of soort...");
+        txtZoek.setPrefWidth(300);
+        zoekBalk.getChildren().addAll(new Label("Zoeken:"), txtZoek);
 
         // invoervelden
         HBox inputBalk = new HBox(10);
@@ -91,10 +98,31 @@ public class VoertuigenScreen extends VBox {
             }
         });
 
-        this.getChildren().addAll(titel, inputBalk, tableView);
+        this.getChildren().addAll(titel, zoekBalk, inputBalk, tableView);
     }
 
     private void refreshTable() {
-        tableView.setItems(controller.getAllVoertuigen());
+        FilteredList<Voertuig> filteredData = new FilteredList<>(controller.getAllVoertuigen(), p -> true);
+
+        txtZoek.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(voertuig -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                if (voertuig.getKenteken().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                } else if (voertuig.getVoertuignaam().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                } else if (voertuig.getSoort().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                }
+                return false;
+            });
+        });
+
+        tableView.setItems(filteredData);
     }
 }

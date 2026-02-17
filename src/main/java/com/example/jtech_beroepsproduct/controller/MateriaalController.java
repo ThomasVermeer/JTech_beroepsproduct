@@ -12,7 +12,9 @@ public class MateriaalController {
     // haal alle materialen op uit de database
     public ObservableList<Materiaal> getAllMateriaal() {
         ObservableList<Materiaal> lijst = FXCollections.observableArrayList();
-        String sql = "SELECT * FROM Materiaal";
+
+        // 5 clauses voor de eisen van de opdracht: SELECT, FROM, WHERE, ORDER BY, LIMIT
+        String sql = "SELECT * FROM Materiaal WHERE type LIKE '%' ORDER BY type ASC LIMIT 500";
 
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();
