@@ -46,7 +46,7 @@ public class MateriaalController {
             pstmt.setString(2, m.getType());
             pstmt.setString(3, m.getDoel());
 
-            // Voor de UPDATE kant:
+            // voor de UPDATE kant:
             pstmt.setString(4, m.getType());
             pstmt.setString(5, m.getDoel());
 

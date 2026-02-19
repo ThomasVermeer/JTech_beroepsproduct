@@ -30,7 +30,7 @@ public class KoppelingenScreen extends VBox {
 
         // Zoekbalk toevoegen voor de filter-functionaliteit
         HBox zoekBalk = new HBox(10);
-        txtZoek.setPromptText("Filter op soldaat, materiaal of kenteken...");
+        txtZoek.setPromptText("Filter op soldaat, materiaal, kenteken of datum...");
         txtZoek.setPrefWidth(300);
         zoekBalk.getChildren().addAll(new Label("Zoeken:"), txtZoek);
 
@@ -98,6 +98,9 @@ public class KoppelingenScreen extends VBox {
                 if (koppeling.getSoldaatnummer().toLowerCase().contains(filter)) return true;
                 if (koppeling.getMateriaalnummer() != null && koppeling.getMateriaalnummer().toLowerCase().contains(filter)) return true;
                 if (koppeling.getKenteken() != null && koppeling.getKenteken().toLowerCase().contains(filter)) return true;
+
+                // Hier checken we of de aanmaakdatum (als tekst) ook de zoekterm bevat
+                if (koppeling.getAanmaakdatum() != null && koppeling.getAanmaakdatum().toString().contains(filter)) return true;
 
                 return false;
             });

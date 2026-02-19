@@ -25,7 +25,7 @@ public class SoldatenScreen extends VBox {
         titel.getStyleClass().add("headline-1");
 
         HBox zoekBalk = new HBox(10);
-        txtZoek.setPromptText("Zoek op nummer, naam of rang...");
+        txtZoek.setPromptText("Zoek op nummer, naam, rang of datum...");
         txtZoek.setPrefWidth(300);
         zoekBalk.getChildren().addAll(new Label("Zoeken:"), txtZoek);
 
@@ -132,6 +132,9 @@ public class SoldatenScreen extends VBox {
                 } else if (soldaat.getNaam().toLowerCase().contains(lowerCaseFilter)) {
                     return true;
                 } else if (soldaat.getRang().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                } else if (soldaat.getGeboorteDatum() != null && soldaat.getGeboorteDatum().toString().contains(lowerCaseFilter)) {
+
                     return true;
                 }
                 return false;
